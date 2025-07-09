@@ -24,11 +24,6 @@ const optionsElement = document.getElementById('options');
 const nextButton = document.getElementById('next-button');
 const scoreContainer = document.getElementById('score-container');
 const scoreElement = document.getElementById('score');
-const restartButtonContinuing from where the JavaScript left off, here's the rest of the `script.js` file, along with integration for handling user interactions, showing questions, and tracking scores.
-
-### Complete JavaScript (script.js)
-
-```javascript
 const restartButton = document.getElementById('restart-button');
 
 startButton.addEventListener('click', startGame);
@@ -97,4 +92,5 @@ function restartGame() {
     questionContainer.classList.add('hidden');
     scoreContainer.classList.add('hidden');
     startButton.classList.remove('hidden');
+}
 }
