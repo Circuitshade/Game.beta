@@ -1,161 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>IT Adventure Game</title>
- <style>
-  body {
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
-  color: #333;
-  text-align: center;
-  margin: 0;
-  padding: 20px;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Adventure Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: #fff;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
 
-  .container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
 
-  .hidden {
-  display: none;
-  }
+        .hidden {
+            display: none;
+        }
 
-  button {
-  padding: 10px 20px;
-  margin-top: 20px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  }
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-  button:hover {
-  background-color: #218838;
-  }
- </style>
+        button:hover {
+            background-color: #218838;
+        }
+
+        #score-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
- <div class="container">
-  <h1>IT Adventure Game</h1>
-  <div id="question-container" class="hidden">
-  <p id="question"></p>
-  <div id="options"></div>
-  <button id="next-button" class="hidden">Next</button>
-  </div>
-  <div id="start-container">
-  <button id="start-button">Start Game</button>
-  </div>
-  <div id="score-container" class="hidden">
-  <p>Your Score: <span id="score">0</span></p>
-  <button id="restart-button">Restart Game</button>
-  </div>
- </div>
- <script>
-  const levels = {
-  "Networking": [
-   { question: "What does DHCP stand for?", options: ["Dynamic Host Configuration Protocol", "Dynamic Host Control Protocol"], answer: "Dynamic Host Configuration Protocol" },
-   { question: "What is the purpose of a router?", options: ["Connect different networks", "Store user data"], answer: "Connect different networks" }
-  ],
-  "Security": [
-   { question: "What does VPN stand for?", options: ["Virtual Private Network", "Variable Public Network"], answer: "Virtual Private Network" },
-   { question: "What is a firewall?", options: ["A software that protects your network", "A type of virus"], answer: "A software that protects your network" }
-  ],
-  "Programming": [
-   { question: "What does HTML stand for?", options: ["Hypertext Markup Language", "Hyperlink and Text Markup Language"], answer: "Hypertext Markup Language" },
-   { question: "Which language is primarily used for web development?", options: ["JavaScript", "C++"], answer: "JavaScript" }
-  ]
-  };
+    <div id="score-display">Score: <span id="score">0</span></div>
+    <div class="container">
+        <h1>IT Adventure Game</h1>
+        <div id="question-container" class="hidden">
+            <p id="question"></p>
+            <div id="options"></div>
+            <button id="next-button" class="hidden">Next</button>
+        </div>
+        <div id="start-container">
+            <button id="start-button">Start Game</button>
+        </div>
+        <div id="score-container" class="hidden">
+            <p>Your Score: <span id="final-score">0</span></p>
+            <button id="restart-button">Restart Game</button>
+        </div>
+    </div>
+    <script>
+        const levels = {
+            "Networking": [
+                { question: "What does DHCP stand for?", options: ["Dynamic Host Configuration Protocol", "Dynamic Host Control Protocol"], answer: "Dynamic Host Configuration Protocol" },
+                { question: "What is the purpose of a router?", options: ["Connect different networks", "Store user data"], answer: "Connect different networks" }
+            ],
+            "Security": [
+                { question: "What does VPN stand for?", options: ["Virtual Private Network", "Variable Public Network"], answer: "Virtual Private Network" },
+                { question: "What is a firewall?", options: ["A software that protects your network", "A type of virus"], answer: "A software that protects your network" }
+            ],
+            "Programming": [
+                { question: "What does HTML stand for?", options: ["Hypertext Markup Language", "Hyperlink and Text Markup Language"], answer: "Hypertext Markup Language" },
+                { question: "Which language is primarily used for web development?", options: ["JavaScript", "C++"], answer: "JavaScript" }
+            ]
+        };
 
-  let currentLevel = 0;
-  let currentQuestionIndex = 0;
-  let score = 0;
+        let currentLevel = 0;
+        let currentQuestionIndex = 0;
+        let score = 0;
 
-  const startButton = document.getElementById('start-button');
-  const questionContainer = document.getElementById('question-container');
-  const questionElement = document.getElementById('question');
-  const optionsElement = document.getElementById('options');
-  const nextButton = document.getElementById('next-button');
-  const scoreContainer = document.getElementById('score-container');
-  const scoreElement = document.getElementById('score');
-  const restartButton = document.getElementById('restart-button');
+        const startButton = document.getElementById('start-button');
+        const questionContainer = document.getElementById('question-container');
+        const questionElement = document.getElementById('question');
+        const optionsElement = document.getElementById('options');
+        const nextButton = document.getElementById('next-button');
+        const scoreContainer = document.getElementById('score-container');
+        const finalScoreElement = document.getElementById('final-score');
+        const restartButton = document.getElementById('restart-button');
+        const scoreElement = document.getElementById('score');
 
-  startButton.addEventListener('click', startGame);
-  nextButton.addEventListener('click', () => {
-  currentQuestionIndex++;
-  if (currentQuestionIndex < levels[Object.keys(levels)[currentLevel]].length) {
-   showQuestion();
-  } else {
-   currentLevel++;
-   currentQuestionIndex = 0;
-   if (currentLevel < Object.keys(levels).length) {
-    showQuestion();
-   } else {
-    endGame();
-   }
-  }
-  });
+        startButton.addEventListener('click', startGame);
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < levels[Object.keys(levels)[currentLevel]].length) {
+                showQuestion();
+            } else {
+                currentLevel++;
+                currentQuestionIndex = 0;
+                if (currentLevel < Object.keys(levels).length) {
+                    showQuestion();
+                } else {
+                    endGame();
+                }
+            }
+        });
 
-  restartButton.addEventListener('click', restartGame);
+        restartButton.addEventListener('click', restartGame);
 
-  function startGame() {
-  currentLevel = 0;
-  score = 0;
-  startButton.classList.add('hidden');
-  scoreContainer.classList.add('hidden');
-  questionContainer.classList.remove('hidden');
-  showQuestion();
-  }
+        function startGame() {
+            currentLevel = 0;
+            score = 0;
+            scoreElement.textContent = score; // Reset score display at game start
+            startButton.classList.add('hidden');
+            scoreContainer.classList.add('hidden');
+            questionContainer.classList.remove('hidden');
+            showQuestion();
+        }
 
-  function showQuestion() {
-  const levelName = Object.keys(levels)[currentLevel];
-  const questionData = levels[levelName][currentQuestionIndex];
-  questionElement.textContent = questionData.question;
-  optionsElement.innerHTML = '';
+        function showQuestion() {
+            const levelName = Object.keys(levels)[currentLevel];
+            const questionData = levels[levelName][currentQuestionIndex];
+            questionElement.textContent = questionData.question;
+            optionsElement.innerHTML = '';
 
-  questionData.options.forEach((option) => {
-   const button = document.createElement('button');
-   button.textContent = option;
-   button.addEventListener('click', () => selectOption(option, questionData.answer));
-   optionsElement.appendChild(button);
-  });
+            questionData.options.forEach((option) => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.addEventListener('click', () => selectOption(option, questionData.answer));
+                optionsElement.appendChild(button);
+            });
 
-  nextButton.classList.add('hidden');
-  }
+            nextButton.classList.add('hidden');
+        }
 
-  function selectOption(selectedOption, correctAnswer) {
-  if (selectedOption === correctAnswer) {
-   score += 10; // Gain 10 points for a correct answer
-  } else {
-   score -= 5; // Lose 5 points for a wrong answer
-  }
-  nextButton.classList.remove('hidden');
-  optionsElement.querySelectorAll('button').forEach((button) => {
-   button.disabled = true;
-  });
-  }
+        function selectOption(selectedOption, correctAnswer) {
+            if (selectedOption === correctAnswer) {
+                score += 10; // Gain 10 points for a correct answer
+            } else {
+                score -= 5; // Lose 5 points for a wrong answer
+            }
+            scoreElement.textContent = score; // Update score display
+            nextButton.classList.remove('hidden');
+            optionsElement.querySelectorAll('button').forEach((button) => {
+                button.disabled = true;
+            });
+        }
 
-  function endGame() {
-  questionContainer.classList.add('hidden');
-  scoreContainer.classList.remove('hidden');
-  scoreElement.textContent = score;
-  }
+        function endGame() {
+            questionContainer.classList.add('hidden');
+            scoreContainer.classList.remove('hidden');
+            finalScoreElement.textContent = score; // Show final score
+        }
 
-  function restartGame() {
-  score = 0;
-  currentLevel = 0;
-  currentQuestionIndex = 0;
-  questionContainer.classList.add('hidden');
-  scoreContainer.classList.add('hidden');
-  startButton.classList.remove('hidden');
-  }
- </script>
+        function restartGame() {
+            score = 0;
+            currentLevel = 0;
+            currentQuestionIndex = 0;
+            scoreElement.textContent = score; // Reset score display
+            questionContainer.classList.add('hidden');
+            scoreContainer.classList.add('hidden');
+            startButton.classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>
