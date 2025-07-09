@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT Adventure Game</title>
+    <title>IT Adventure Game with Login System</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: url('https://wallpaperaccess.com/full/1277431.png') no-repeat center center fixed; /* Cyber-themed background */
+            background: url('https://wallpaperaccess.com/full/1277431.png') no-repeat center center fixed;
             background-size: cover;
             color: #fff;
             text-align: center;
@@ -51,11 +52,23 @@
             padding: 10px;
             border-radius: 5px;
         }
+
+        #login-container {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
+
 <body>
     <div id="score-display">Score: <span id="score">0</span></div>
-    <div class="container">
+    
+    <div id="login-container">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username">
+        <button id="login-button">Login</button>
+    </div>
+
+    <div class="container hidden">
         <h1>IT Adventure Game</h1>
         <div id="question-container" class="hidden">
             <p id="question"></p>
@@ -70,6 +83,7 @@
             <button id="restart-button">Restart Game</button>
         </div>
     </div>
+
     <script>
         const levels = {
             "Networking": [
@@ -89,7 +103,11 @@
         let currentLevel = 0;
         let currentQuestionIndex = 0;
         let score = 0;
-
+        let username = '';
+        
+        const loginButton = document.getElementById('login-button');
+        const usernameInput = document.getElementById('username');
+        const container = document.querySelector('.container');
         const startButton = document.getElementById('start-button');
         const questionContainer = document.getElementById('question-container');
         const questionElement = document.getElementById('question');
@@ -99,6 +117,25 @@
         const finalScoreElement = document.getElementById('final-score');
         const restartButton = document.getElementById('restart-button');
         const scoreElement = document.getElementById('score');
+
+        // Load stored score if the user has played before.
+        const storedScore = localStorage.getItem('score');
+        if (storedScore) {
+            score = parseInt(storedScore, 10);
+            scoreElement.textContent = score;
+        }
+
+        loginButton.addEventListener('click', () => {
+            username = usernameInput.value;
+            if (username) {
+                document.getElementById('login-container').classList.add('hidden');
+                container.classList.remove('hidden');
+                startButton.classList.remove('hidden');
+                scoreElement.textContent = score; // Update score display
+            } else {
+                alert('Please enter a username.');
+            }
+        });
 
         startButton.addEventListener('click', startGame);
         nextButton.addEventListener('click', () => {
@@ -120,8 +157,8 @@
 
         function startGame() {
             currentLevel = 0;
-            score = 0;
-            scoreElement.textContent = score; // Reset score display at game start
+            currentQuestionIndex = 0;
+            scoreElement.textContent = score; // Reset score display
             startButton.classList.add('hidden');
             scoreContainer.classList.add('hidden');
             questionContainer.classList.remove('hidden');
@@ -151,6 +188,7 @@
                 score -= 5; // Lose 5 points for a wrong answer
             }
             scoreElement.textContent = score; // Update score display
+            localStorage.setItem('score', score); // Store the updated score
             nextButton.classList.remove('hidden');
             optionsElement.querySelectorAll('button').forEach((button) => {
                 button.disabled = true;
@@ -164,14 +202,15 @@
         }
 
         function restartGame() {
-            score = 0;
             currentLevel = 0;
             currentQuestionIndex = 0;
-            scoreElement.textContent = score; // Reset score display
+            // Do not reset score; keep the previous score.
+            scoreElement.textContent = score; // Text remains same.
             questionContainer.classList.add('hidden');
             scoreContainer.classList.add('hidden');
             startButton.classList.remove('hidden');
         }
     </script>
 </body>
+
 </html>
