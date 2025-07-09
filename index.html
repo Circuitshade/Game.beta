@@ -56,12 +56,38 @@
         #login-container {
             margin-bottom: 20px;
         }
+
+        #username-display {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .image-container img {
+            width: 150px;
+            height: auto;
+            margin: 10px;
+            border-radius: 8px;
+            border: 2px solid #fff;
+        }
     </style>
 </head>
 
 <body>
+    <div id="username-display" class="hidden">User: <span id="display-username"></span></div>
     <div id="score-display">Score: <span id="score">0</span></div>
-    
+
     <div id="login-container">
         <h2>Login</h2>
         <input type="text" id="username" placeholder="Username">
@@ -84,6 +110,13 @@
         </div>
     </div>
 
+    <div class="image-container">
+        <img src="https://via.placeholder.com/150" alt="Placeholder Image 1">
+        <img src="https://via.placeholder.com/150" alt="Placeholder Image 2">
+        <img src="https://via.placeholder.com/150" alt="Placeholder Image 3">
+        <img src="https://via.placeholder.com/150" alt="Placeholder Image 4">
+    </div>
+
     <script>
         const levels = {
             "Networking": [
@@ -104,7 +137,7 @@
         let currentQuestionIndex = 0;
         let score = 0;
         let username = '';
-        
+
         const loginButton = document.getElementById('login-button');
         const usernameInput = document.getElementById('username');
         const container = document.querySelector('.container');
@@ -117,6 +150,8 @@
         const finalScoreElement = document.getElementById('final-score');
         const restartButton = document.getElementById('restart-button');
         const scoreElement = document.getElementById('score');
+        const displayUsername = document.getElementById('display-username');
+        const usernameDisplay = document.getElementById('username-display');
 
         // Load stored score if the user has played before.
         const storedScore = localStorage.getItem('score');
@@ -128,6 +163,8 @@
         loginButton.addEventListener('click', () => {
             username = usernameInput.value;
             if (username) {
+                displayUsername.textContent = username; // Update displayed username
+                usernameDisplay.classList.remove('hidden');
                 document.getElementById('login-container').classList.add('hidden');
                 container.classList.remove('hidden');
                 startButton.classList.remove('hidden');
